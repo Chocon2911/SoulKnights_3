@@ -26,32 +26,52 @@ public class DashSkill : Skill
     {
         base.FixedUpdate();
         this.Dashing();
+        this.FinishingDash();
     }
 
-    protected virtual void Update()
+    //==========================================Override==========================================
+    protected override void RechargingSkill()
     {
-        this.Dash();
+        if (this.isDashing) return;
+        base.RechargingSkill();
     }
 
-    //===========================================Method===========================================
-    protected virtual void Dash()
+    protected override void UsingSkill()
     {
-        if (this.canDash && !this.isDashing && this.skillCD.IsReady) this.ActivateDash();
+        if (!this.canDash) return;
+        base.UsingSkill();
     }
 
-    protected virtual void ActivateDash()
+    protected override void UseSkill()
     {
         this.isDashing = true;
     }
 
+    //==========================================On Dash===========================================
     protected virtual void Dashing()
     {
-        if (this.isDashing) this.DoDash();
+        if (!this.isDashing) return;
+        this.Dash();
     }
 
-    protected virtual void DoDash()
+    protected virtual void Dash()
     {
         this.dashCD.CoolingDown();
         this.rb.velocity = this.dashSpeed * this.dashDir;
+    }
+
+    //========================================Finish Dash=========================================
+    protected virtual void FinishingDash()
+    {
+        if (!this.dashCD.IsReady) return;
+        this.FinishingDash();
+    }
+
+    protected virtual void FinishDash()
+    {
+        this.FinishSkill();
+        this.isDashing = false;
+        this.dashCD.ResetStatus();
+        this.dashDir = Vector2.zero;
     }
 }

@@ -14,13 +14,16 @@ public class PlayerMoveByKeyboard : MoveByKeyboard
     //===========================================Unity============================================
     private void FixedUpdate()
     {
-        this.CheckCanMove();
+        this.CheckMove();
     }
 
     //===========================================Method===========================================
-    private void CheckCanMove()
+    private void CheckMove()
     {
-        if (player.Health <= 0) this.canMove = false;
+        if (this.player.Health <= 0 || this.player.IsDashing) this.canMove = false;
         else this.canMove = true;
+
+        if (InputManager.Instance.MoveDir != Vector2.zero) this.player.IsMoving = true;
+        else this.player.IsMoving = false;
     }
 }

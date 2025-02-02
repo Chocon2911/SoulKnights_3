@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skill : MonoBehaviour
+public abstract class Skill : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
     [Header("Skill")]
@@ -16,12 +16,34 @@ public class Skill : MonoBehaviour
     //===========================================Unity============================================
     protected virtual void FixedUpdate()
     {
+        this.UsingSkill();
+        this.RechargingSkill();
+    }
+
+    //==========================================Recharge==========================================
+    protected virtual void RechargingSkill()
+    {
+        if (!this.canRecharge || this.skillCD.IsReady) return;
         this.RechargeSkill();
     }
 
-    //===========================================Method===========================================
     protected virtual void RechargeSkill()
     {
-        if (this.canRecharge && !this.skillCD.IsReady) this.skillCD.CoolingDown();
+        this.skillCD.CoolingDown();
+    }
+
+    //============================================Use=============================================
+    protected virtual void UsingSkill()
+    {
+        if (!this.skillCD.IsReady) return;
+        this.UseSkill();
+    }
+
+    protected abstract void UseSkill();
+
+    //===========================================Finish===========================================
+    protected virtual void FinishSkill()
+    {
+        this.skillCD.ResetStatus();
     }
 }
